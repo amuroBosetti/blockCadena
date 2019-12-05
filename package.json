@@ -1,0 +1,27 @@
+{
+  "name": "blockcadena",
+  "version": "1.0.0",
+  "description": "A little blockchain experiment with JavaScript",
+  "main": "app.js",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1",
+    "node": "^13.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amuroBosetti/blockCadena.git"
+  },
+  "keywords": [
+    "blockchain"
+  ],
+  "author": "Mauro Bosetti (amuroBosetti on GitHub/Lab)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amuroBosetti/blockCadena/issues"
+  },
+  "homepage": "https://github.com/amuroBosetti/blockCadena#readme"
+}
