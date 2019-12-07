@@ -1,9 +1,6 @@
 //Estandar que viene con el paquete crypto.js
 const SHA256 = require("crypto-js/sha256");
 
-//TESTING
-
-
 //Calcular el hash, teniendo un bloque
 function calculateHash({previousHash, timestamp, data, nonce = 1}){
   return SHA256(previousHash + timestamp + JSON.stringify(data) + nonce).toString();
@@ -89,7 +86,6 @@ function trampoline(func) {
 
 module.exports = {
   generateGenesisBlock: generateGenesisBlock,
-  mineBlock: mineBlock,
   addBlock: addBlock,
   validateChain: validateChain
 };
