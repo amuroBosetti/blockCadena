@@ -1,7 +1,23 @@
 //Estandar que viene con el paquete crypto.js
 const SHA256 = require("crypto-js/sha256");
 
-console.log(generateGenesisBlock());
+//TESTING
+test();
+
+function test(){
+  let chain = [generateGenesisBlock()];
+
+  const newBlockData = {
+    sender: "ks829fh28192j28d9dk9",
+    receiver: "ads8d91w29jsm2822910",
+    amount:   0.0023,
+    currency: "BTC"
+  }
+
+  const newChain = addBlock(chain, newBlockData);
+
+  console.log(newChain);
+}
 
 //Calcular el hash, teniendo un bloque
 function calculateHash({previousHash, timestamp, data, nonce = 1}){
@@ -35,9 +51,53 @@ function nextNonce(block){
 }
 
 //Toma un bloque, y retorna el mismo bloque con una nueva version del hash
-function updateHash() {
+function updateHash(block) {
   return {
     ...block,
-    hash: calculateHash(block);
+    hash: calculateHash(block)
   }
+}
+
+function mineBlock(difficulty, block) {
+  function mine(block){
+    const newBlock = nextNonce(block);
+    return checkDifficulty(difficulty, newBlock.hash)
+           ? newBlock
+           : () => mine(nextNonce(block)); //esto retorna funciones anonimas, que trampoline va a ir ejecutando
+  }
+  return trampoline(mine(nextNonce(block)));
+}
+
+//Agrega un bloque a una cadena
+function addBlock(chain, data) {
+  const {hash: previousHash} = chain[chain.length - 1];
+  const block        = { timestamp: + new Date(), data, previousHash, nonce: 0 };
+  const newBlock     = mineBlock(4, block);
+  return chain.concat(newBlock);
+}
+
+//Validar toda la cadena
+function validateChain(chain) {
+  function tce(chain, index) {
+    if(index === 0) return true;
+    const { hash, ...currentBlockWithoutHash } = chain[index];
+    const currentBlock                         = chain[index];
+    const previousBlock                        = chain[index - 1];
+    const isValidHash                          = (hash === calculateHash(currentBlockWithoutHash));
+    const isPreviousHashValid                  = (currentBlock.previousHash === previousBlock.hash);
+    const isValidChain                         = (isValidHash && isPreviousHashValid);
+
+    if(!isValidChain) return false;
+    else return tce(chain, index - 1);
+  }
+  return tce(chain, chain.length - 1);
+}
+
+//Trampolin para evitar problemas de memoria al hacer recursión
+function trampoline(func) {
+  let result = func.apply(func, ...arguments);
+  while(result && typeof(result) === "function") {
+    result = result();
+  }
+  return result;
 }
