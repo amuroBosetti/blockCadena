@@ -2,25 +2,6 @@
 const SHA256 = require("crypto-js/sha256");
 
 //TESTING
-test();
-
-function test(){
-  var chain = [generateGenesisBlock()];
-
-  const newBlockData = {
-    sender: "ks829fh28192j28d9dk9",
-    receiver: "ads8d91w29jsm2822910",
-    amount:   0.0023,
-    currency: "BTC"
-  }
-
-  chain = addBlock(chain, newBlockData);
-  console.log(validateChain(chain));
-
-  chain[1].hash = "123";
-  console.log(validateChain(chain));
-
-}
 
 
 //Calcular el hash, teniendo un bloque
@@ -105,3 +86,10 @@ function trampoline(func) {
   }
   return result;
 }
+
+module.exports = {
+  generateGenesisBlock: generateGenesisBlock,
+  mineBlock: mineBlock,
+  addBlock: addBlock,
+  validateChain: validateChain
+};
