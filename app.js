@@ -5,7 +5,7 @@ const SHA256 = require("crypto-js/sha256");
 test();
 
 function test(){
-  let chain = [generateGenesisBlock()];
+  var chain = [generateGenesisBlock()];
 
   const newBlockData = {
     sender: "ks829fh28192j28d9dk9",
@@ -14,10 +14,14 @@ function test(){
     currency: "BTC"
   }
 
-  const newChain = addBlock(chain, newBlockData);
+  chain = addBlock(chain, newBlockData);
+  console.log(validateChain(chain));
 
-  console.log(newChain);
+  chain[1].hash = "123";
+  console.log(validateChain(chain));
+
 }
+
 
 //Calcular el hash, teniendo un bloque
 function calculateHash({previousHash, timestamp, data, nonce = 1}){
@@ -65,7 +69,7 @@ function mineBlock(difficulty, block) {
            ? newBlock
            : () => mine(nextNonce(block)); //esto retorna funciones anonimas, que trampoline va a ir ejecutando
   }
-  return trampoline(mine(nextNonce(block)));
+  return trampoline(() => mine(nextNonce(block)));
 }
 
 //Agrega un bloque a una cadena
@@ -78,7 +82,7 @@ function addBlock(chain, data) {
 
 //Validar toda la cadena
 function validateChain(chain) {
-  function tce(chain, index) {
+  function validate(chain, index) {
     if(index === 0) return true;
     const { hash, ...currentBlockWithoutHash } = chain[index];
     const currentBlock                         = chain[index];
@@ -88,9 +92,9 @@ function validateChain(chain) {
     const isValidChain                         = (isValidHash && isPreviousHashValid);
 
     if(!isValidChain) return false;
-    else return tce(chain, index - 1);
+    else return () => validate(chain, index - 1)
   }
-  return tce(chain, chain.length - 1);
+  return trampoline(() => validate(chain, chain.length - 1));
 }
 
 //Trampolin para evitar problemas de memoria al hacer recursión
