@@ -1,4 +1,6 @@
-# blockCadena
+# blockCadena 
+[![Build Status](https://travis-ci.org/amuroBosetti/blockCadena.svg?branch=master)](https://travis-ci.org/amuroBosetti/blockCadena)
+
 This is a little experiment with NodeJS and Blockchain. No big deal, just the propper functions that let you mine blocks, add it to a chain, and validate said chains.
 
 ### Instalation
